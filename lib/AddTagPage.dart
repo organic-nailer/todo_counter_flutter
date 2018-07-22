@@ -24,35 +24,54 @@ class AddTagPageState extends State<AddTagPage>{
 		    	new IconButton(
 				    icon: new Icon(Icons.check),
 				    onPressed: (){
-
+				    	Navigator.of(context).pop(_searchResult);
 				    }),
 		    ],
 		    bottom: new PreferredSize(
 			    preferredSize:  const Size.fromHeight(48.0),
 		      child: Padding(
-		        padding: const EdgeInsets.all(8.0),
+		        padding: const EdgeInsets.all(0.0),
 		        child: new ListTile(
-					leading: new Icon(Icons.search),
+					leading: new Icon(Icons.search, color: Colors.white,),
 					title: new TextField(
 						controller: _SearchTextController,
+						style: new TextStyle(
+							color: Colors.white,
+						),
 						decoration: new InputDecoration(
-					        hintText: 'Search', border: InputBorder.none),
+					        hintText: 'タグを検索...',
+							border: InputBorder.none,
+							hintStyle: new TextStyle(
+								color: Colors.white,
+							)
+						),
 				        onChanged: onSearchTextChanged,),
-			        trailing: new IconButton(icon: new Icon(Icons.cancel), onPressed: () {
-			        	_SearchTextController.clear();
-				        onSearchTextChanged('');},),
+			        trailing: new IconButton(
+				        icon: new Icon(
+					        Icons.cancel,
+					        color: Colors.white,
+				        ),
+				        onPressed: () {
+				        	_SearchTextController.clear();
+				        	onSearchTextChanged('');
+				        	},
+			        ),
 		        ),
 		      ),
 		    ),
 	    ),
-	    body: new StreamBuilder(
+	    //検索ボックスが空でないもしくは検索結果がある場合は検索結果を表示、それ以外は全部を表示
+	    body: _searchResult.length != 0 || _SearchTextController.text.isNotEmpty
+	    ? new ListView.builder(
+		    itemCount: _searchResult.length,
+		    padding: const EdgeInsets.only(top: 10.0),
+		    itemBuilder: (context, index) => _TagItemViewByTxt(_searchResult[index]),
+	    )
+	    : new StreamBuilder(
 		    stream: Firestore.instance.collection("Tags").snapshots(),
 		    builder: (context,snapshot){
-		    	if(!snapshot.hasData) return const Text("Loading...");
-
-		    	
-
-		    	return new ListView.builder(
+			    if(!snapshot.hasData) return const Text("Loading...");
+			    return new ListView.builder(
 				    itemCount: snapshot.data.documents.length,
 				    padding: const EdgeInsets.only(top: 10.0),
 				    itemBuilder: (context, index) => TagItemView(snapshot.data.documents[index]),
@@ -60,7 +79,7 @@ class AddTagPageState extends State<AddTagPage>{
 		    }
 	    )
     );
-  }
+	}
 
 	onSearchTextChanged(String text) async {
 		_searchResult.clear();
@@ -69,24 +88,32 @@ class AddTagPageState extends State<AddTagPage>{
 			return;
 		}
 
-		_userDetails.forEach((userDetail) {
+		Firestore.instance.collection("Tags").where("tag",isGreaterThanOrEqualTo: text).snapshots().listen(
+			(data) => _searchResult.add(data.documents[0]["tag"])
+		);
+
+		/*_userDetails.forEach((userDetail) {
 			if (userDetail.firstName.contains(text) || userDetail.lastName.contains(text))
 				_searchResult.add(userDetail);
-		});
+		});*/
 
 		setState(() {});
 	}
 
 
+	///タグを表示させるリストのアイテム
 	Widget TagItemView(DocumentSnapshot document){
-		bool IsSelect = _selected.contains(document["tag"]);
+		return _TagItemViewByTxt(document["tag"]);
+	}
+	Widget _TagItemViewByTxt(String Tag){
+		bool IsSelect = _selected.contains(Tag);
 
 		return new CheckboxListTile(
-			title: new Text(document["tag"]),
+			title: new Text(Tag),
 			value: IsSelect,
 			onChanged: (next){
-				if(next) _selected.add(document["tag"]);
-				else _selected.remove(document["tag"]);
+				if(next) _selected.add(Tag);
+				else _selected.remove(Tag);
 
 				setState(() {
 					IsSelect = next;

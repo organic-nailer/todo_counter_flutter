@@ -16,7 +16,7 @@ class AddPageState extends State<AddPage>{
 
 	final TextEditingController _titleTextController = new TextEditingController();
 	final TextEditingController _descriptionTextControllder = new TextEditingController();
-	final TextEditingController _tagsTextController = new TextEditingController();
+	final TextEditingController _tagsViewController = new TextEditingController();
 	//final String title;
 
 	//DateTime _fromDate = new DateTime.now();
@@ -117,14 +117,24 @@ class AddPageState extends State<AddPage>{
 						leading: new Icon(Icons.label),
 						title: new InkWell(
 						  child: new Text(
-						  	"タグを追加...",
-						  	style: new TextStyle(
+							  _tagsViewController.text = "タグを追加",
+							  style: new TextStyle(
 						  		color: Colors.black,
 						  		fontFamily: "NotoSansJP"
 						  	),
 						  ),
-							onTap: (){
-								Navigator.of(context).pushNamed("/add/tag");
+							onTap: () async {
+								final /*List<String>*/ _result = await Navigator.of(context).pushNamed("/add/tag");
+								//final List<String> _result = await Navigator.of(context).pushNamed("/add/tag");
+								/*_tagsViewController.clear();
+								if(_result.length != 0){
+									_result.forEach((String f) {
+										_tagsViewController.text += f + ",";
+									});
+								}
+								else{
+									_tagsViewController.text = "タグを追加...";
+								}*/
 							},
 						),
 					),
