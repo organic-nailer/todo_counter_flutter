@@ -11,6 +11,8 @@ class AddPage extends StatefulWidget{
 DateTime _date = new DateTime.now();
 TimeOfDay _time = new TimeOfDay.now();
 
+List<String> _selectedTags = [];
+
 class AddPageState extends State<AddPage>{
 	//const AddPage({Key key, this.title}) : super(key: key);
 
@@ -18,6 +20,7 @@ class AddPageState extends State<AddPage>{
 	final TextEditingController _descriptionTextControllder = new TextEditingController();
 	final TextEditingController _tagsViewController = new TextEditingController();
 	//final String title;
+	String _tags = "タグを編集...";
 
 	//DateTime _fromDate = new DateTime.now();
 	//TimeOfDay _fromTime = const TimeOfDay(hour: 7, minute: 28);
@@ -117,24 +120,26 @@ class AddPageState extends State<AddPage>{
 						leading: new Icon(Icons.label),
 						title: new InkWell(
 						  child: new Text(
-							  _tagsViewController.text = "タグを追加",
+							  "$_tags",
 							  style: new TextStyle(
 						  		color: Colors.black,
 						  		fontFamily: "NotoSansJP"
 						  	),
 						  ),
 							onTap: () async {
-								final /*List<String>*/ _result = await Navigator.of(context).pushNamed("/add/tag");
-								//final List<String> _result = await Navigator.of(context).pushNamed("/add/tag");
-								/*_tagsViewController.clear();
-								if(_result.length != 0){
-									_result.forEach((String f) {
-										_tagsViewController.text += f + ",";
+								var _result = (await Navigator.of(context).pushNamed("/add/tag")).toString();
+								if(_result != ""){
+									setState(() {
+										_tags = _result;
 									});
+									_selectedTags = _result.split(',');
 								}
 								else{
-									_tagsViewController.text = "タグを追加...";
-								}*/
+									setState(() {
+										_tags = "タグを追加...";
+									});
+									_selectedTags = [];
+								}
 							},
 						),
 					),

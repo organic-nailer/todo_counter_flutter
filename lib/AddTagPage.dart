@@ -8,7 +8,7 @@ class AddTagPage extends StatefulWidget{
 
 class AddTagPageState extends State<AddTagPage>{
 
-	var _selected = new Set<String>();
+	var _selected = new List<String>();
 
 	List<String> _searchResult = [];
 
@@ -18,13 +18,14 @@ class AddTagPageState extends State<AddTagPage>{
 	Widget build(BuildContext context) {
     // TODO: implement build
     return new Scaffold(
+	    //検索ボックス
 	    appBar: new AppBar(
 		    title: new Text("Tag"),
 		    actions: <Widget>[
 		    	new IconButton(
 				    icon: new Icon(Icons.check),
 				    onPressed: (){
-				    	Navigator.of(context).pop(_searchResult);
+				    	Navigator.of(context).pop(_selected.join(","));
 				    }),
 		    ],
 		    bottom: new PreferredSize(
@@ -92,14 +93,47 @@ class AddTagPageState extends State<AddTagPage>{
 			(data) => _searchResult.add(data.documents[0]["tag"])
 		);
 
-		/*_userDetails.forEach((userDetail) {
-			if (userDetail.firstName.contains(text) || userDetail.lastName.contains(text))
-				_searchResult.add(userDetail);
-		});*/
-
 		setState(() {});
 	}
 
+	Widget TagListToggleView(){
+		if(_searchResult.length != 0 || _SearchTextController.text.isNotEmpty)
+		{
+			return new ListView.builder(
+				itemCount: _searchResult.length,
+				padding: const EdgeInsets.only(top: 10.0),
+				itemBuilder: (context, index) => _TagItemViewByTxt(_searchResult[index]),
+			);
+		}
+		else {
+			return new StreamBuilder(
+				stream: Firestore.instance.collection("Tags").snapshots(),
+				builder: (context,snapshot){
+					if(!snapshot.hasData) return const Text("Loading...");
+
+					if(_searchResult.length == 0){
+						return new ListTile(
+							title: new Text(_SearchTextController.text + " を追加..."),
+							trailing: new CircleAvatar(
+								backgroundColor: Colors.green,
+								child: new IconButton(
+									icon: new Icon(Icons.add),
+									onPressed: (){
+
+									}),
+							),
+						);
+					}
+
+					return new ListView.builder(
+						itemCount: snapshot.data.documents.length,
+						padding: const EdgeInsets.only(top: 10.0),
+						itemBuilder: (context, index) => TagItemView(snapshot.data.documents[index]),
+					);
+				}
+			);
+		}
+	}
 
 	///タグを表示させるリストのアイテム
 	Widget TagItemView(DocumentSnapshot document){

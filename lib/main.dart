@@ -137,11 +137,6 @@ class TimeLinePage extends StatelessWidget{
             padding: const EdgeInsets.only(top: 10.0),
             //itemExtent: 100.0,
             itemBuilder: (context, index) => TodoItemCard(context, snapshot.data.documents[index]),
-            /*
-                itemBuilder: (context, index) {
-                  DocumentSnapshot ds = snapshot.data.documents[index];
-                  return new Text(" ${ds['title']},${ds['description']},${ds['vote']}");
-                }*/
           );
         });
   }
@@ -172,26 +167,6 @@ class SettingsPage extends StatelessWidget{
     );
   }
 }
-/*
-class ExpansionTileSample extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: const Text("TodoCounter"),
-      ),
-      floatingActionButton: new FloatingActionButton(
-          child: new Icon(Icons.add),
-          backgroundColor: Colors.green,
-          onPressed: (){}),
-      body: new TodoList(),
-      /*
-      body: new ListView.builder(
-          itemBuilder: (BuildContext context, int index) => new EntryItem(data[index]),
-      itemCount: data.length,),*/
-    );
-  }
-}*/
 
 class TodoItem{
   final String title;
@@ -226,71 +201,3 @@ class RemainingCounter extends StatelessWidget{
     );
   }
 }
-
-//サンプルのリスト
-/*
-class TodoList extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    return new ListView(
-      padding: new EdgeInsets.symmetric(vertical: 8.0),
-      children: <Widget>[
-        new TodoListItem(new TodoItem(
-          title: "PTA書類提出",
-          description: "HR",
-          date: new DateTime.now()
-        )),
-        new TodoListItem(new TodoItem(
-            title: "化学レポ",
-            description: "化学準備室",
-            date: new DateTime.now()
-        )),
-        new TodoListItem(new TodoItem(
-            title: "ダイエー志木店",
-            description: "閉店セール",
-            date: new DateTime.now()
-        )),
-        new TodoListItem(new TodoItem(
-            title: "AQUOS R",
-            description: "SH-03J",
-            date: new DateTime.now()
-        )),
-        new TodoListItem(new TodoItem(
-            title: "Google Home",
-            description: "Google Assistant",
-            date: new DateTime.now()
-        )),
-        new TodoListItem(new TodoItem(
-            title: "Google",
-            description: "Assistant",
-            date: new DateTime.now()
-        )),
-        new TodoListItem(new TodoItem(
-            title: "Google",
-            description: "Assistant",
-            date: new DateTime.now()
-        )),
-        new TodoListItem(new TodoItem(
-            title: "Google",
-            description: "Assistant",
-            date: new DateTime.now()
-        )),
-        new TodoListItem(new TodoItem(
-            title: "Google",
-            description: "Assistant",
-            date: new DateTime.now()
-        )),
-        new TodoListItem(new TodoItem(
-            title: "Google",
-            description: "Assistant",
-            date: new DateTime.now()
-        )),
-        new TodoListItem(new TodoItem(
-            title: "Google",
-            description: "Assistant",
-            date: new DateTime.now()
-        )),
-      ],
-    );
-  }
-}*/

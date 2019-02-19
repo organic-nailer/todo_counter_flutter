@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 // ignore: non_constant_identifier_names
 Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
 
+
 	final List<dynamic> Tags = document["tag"];
-	/*
-	return new ListView.builder(
-		itemCount: Tags.length,
-		scrollDirection: Axis.horizontal,
-		padding: const EdgeInsets.only(top: 1.0),
-		itemBuilder: (context, int index) {
-			return new Text(Tags[index]);
-		});*/
+	//final String _title = document['title'];
+	final int _remain = document['vote'];
+	//final List<dynamic> Tags = ["hoge","piyo","huga"];
+	String _title = document['title'];
+	//final String _remain = "2";
+
+	if(_title == "") _title = "Null";
 
 	return new Card(
 		color: Colors.white,
@@ -24,20 +24,17 @@ Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
 						style: new TextStyle(fontFamily: "NotoSansJP"),
 					),
 				));
-			},/*
-			child: new ListView.builder(
-				itemCount: Tags.length,
-				scrollDirection: Axis.horizontal,
-				padding: const EdgeInsets.only(top: 1.0),
-				itemBuilder: (context, int index) {
-					return new Text(Tags[index]);
-				}),*/
+			},
 			child: new ListTile(
+				//leading: new Text(_title.substring(0,1)),
 				leading: new CircleAvatar(
 					backgroundColor: Colors.green,
 					child: new Text(
-						document['title'].substring(0,1),
-						style: new TextStyle(fontFamily: "NotoSansJP"),
+						//"Hi-Fi".substring(0,1),
+						_title.substring(0,1),
+						style: new TextStyle(
+							fontFamily: "NotoSansJP",
+						),
 					),
 				),
 				title: new Text(
@@ -57,18 +54,25 @@ Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
 				  	itemBuilder: (context, int index) {
 				  		return Padding(
 				  		  padding: const EdgeInsets.all(5.0),
-				  		  child: new Card(//TODO: Tooltipも検討
-				  		  	color: Colors.yellow,
-				  		  	child: Padding(
-				  		  	  padding: const EdgeInsets.all(4.0),
-				  		  	  child: new Text(
-								        Tags[index].toString(),
-								        style: new TextStyle(
-									        fontSize: 15.0,
-								        ),
-				  		  	  ),
-				  		  	),
-					        ),
+				  		  child: new Container(
+						      decoration: new BoxDecoration(
+							      border: new Border.all(
+								      width: 1.0,
+								      color: Colors.black12,
+							      ),
+							      borderRadius: new BorderRadius.circular(8.0),
+						      ),
+						      child: Padding(
+					              padding: const EdgeInsets.all(4.0),
+					              child: new Text(
+					                  Tags[index].toString(),
+					                  style: new TextStyle(
+						                  fontFamily: "NotoSansJP",
+					                      fontSize: 15.0,
+					                  ),
+					              ),
+					          ),
+					      ),
 				  		);
 				  	}),
 				),
@@ -77,7 +81,7 @@ Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
 					style: new TextStyle(fontFamily: "NotoSansJP"),
 				),*/
 				trailing: new Text(
-					"残り"+document['vote'].toString()+"日",
+					"残り"+ _remain.toString() +"日",
 					style: new TextStyle(
 						fontSize: 30.0,
 						fontFamily: "NotoSansJP",
