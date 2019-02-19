@@ -89,7 +89,7 @@ class AddPageState extends State<AddPage>{
 					new ListTile(
 						leading: new Icon(Icons.schedule),
 						title: new Text("タスク"),
-						subtitle: new Text("hykwyuk0125@gmail.com"),
+						subtitle: new Text("example@example.com"),
 					),
 					new Divider(color: Colors.grey,),
 					new ListTile(

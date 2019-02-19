@@ -5,6 +5,7 @@ import 'CustomForm.dart';
 import 'TodoItemCard.dart';
 import 'AddPage.dart';
 import 'AddTagPage.dart';
+import 'DetailPage.dart';
 
 void main() => runApp(new MyApp());
 
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         '/add': (_) => new AddPage(),
         '/add/tag': (_) => new AddTagPage(),
         '/form': (_) => new MyCustomForm(),
+        '/detail': (_) => new DetailPage(),
 
       },
     );
@@ -84,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage>{
 	    floatingActionButton: new FloatingActionButton(
 		    child: new Icon(Icons.add),
 		    onPressed: (){
-              Navigator.of(context).pushNamed("/add");
+              Navigator.of(context).pushNamed("/detail");
             }),
     );
   }
