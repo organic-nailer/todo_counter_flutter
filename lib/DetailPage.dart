@@ -17,7 +17,7 @@ class DetailPageState extends State<DetailPage>{
 			    appBar: new PreferredSize(
 				    preferredSize: new Size(MediaQuery.of(context).size.width, appBarHeight),
 				    child: new Container(
-					    color: Colors.blue,
+					    color: Theme.of(context).primaryColor,
 					    child: new Container(
 						    margin: const EdgeInsets.only(top: 30.0),
 						    child: new Stack(
@@ -101,7 +101,7 @@ class DetailPageState extends State<DetailPage>{
 				    onPressed: () {
 					    print('FAB tapped!');
 				    },
-				    backgroundColor: Colors.blueGrey,
+				    backgroundColor: Theme.of(context).accentColor,
 			    ),
 			    right: 10.0,
 			    top: appBarHeight - 5.0,
