@@ -6,6 +6,7 @@ import 'TodoItemCard.dart';
 import 'AddPage.dart';
 import 'AddTagPage.dart';
 import 'DetailPage.dart';
+import 'Todo.dart';
 
 void main() => runApp(new MyApp());
 

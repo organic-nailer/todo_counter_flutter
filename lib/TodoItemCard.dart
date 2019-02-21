@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'Todo.dart';
+import 'DetailPage.dart';
 
 // ignore: non_constant_identifier_names
 Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
@@ -18,6 +20,12 @@ Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
 		color: Colors.white,
 		child: new InkWell(
 			onTap: () {
+				Navigator.push(
+					context,
+					MaterialPageRoute(
+						builder: (context) => DetailPage(doc: new Todo.fromDoc(document),),
+					),
+				);
 				Scaffold.of(context).showSnackBar(new SnackBar(
 					content: new Text(
 						document['title'] + " Tapped",
@@ -28,12 +36,13 @@ Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
 			child: new ListTile(
 				//leading: new Text(_title.substring(0,1)),
 				leading: new CircleAvatar(
-					backgroundColor: Colors.green,
+					backgroundColor: Theme.of(context).primaryColor,
 					child: new Text(
 						//"Hi-Fi".substring(0,1),
 						_title.substring(0,1),
 						style: new TextStyle(
 							fontFamily: "NotoSansJP",
+							fontWeight: FontWeight.bold,
 						),
 					),
 				),
