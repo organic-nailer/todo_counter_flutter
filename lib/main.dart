@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage>{
 	    floatingActionButton: new FloatingActionButton(
 		    child: new Icon(Icons.add),
 		    onPressed: (){
-              Navigator.of(context).pushNamed("/detail");
+              Navigator.of(context).pushNamed("/add");
             }),
     );
   }
@@ -173,16 +173,6 @@ class SettingsPage extends StatelessWidget{
         child: new Icon(Icons.settings),
     );
   }
-}
-
-class TodoItem{
-  final String title;
-  final String description;
-  final DateTime date;
-  final List<String> tag;
-  final String type;
-
-  const TodoItem({this.title,this.date,this.description,this.tag,this.type});
 }
 
 //残り○日の部分のUI

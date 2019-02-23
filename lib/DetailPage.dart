@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'Todo.dart';
 
+import 'Todo.dart';
+import 'AddPage.dart';
 
 class DetailPage extends StatelessWidget{
 	double appBarHeight = 128.0;
@@ -74,13 +75,40 @@ class DetailPage extends StatelessWidget{
 												        Icons.edit,
 												        color: Colors.white,
 											        ),
-											        onPressed: null),
-										        new IconButton(
+											        onPressed: (){
+											        	Navigator.push(
+													        context,
+													        MaterialPageRoute(
+														        builder: (context) => AddPage(todo: doc,),
+													        )
+												        );
+											        }),
+										        PopupMenuButton<String>(
 											        icon: new Icon(
 												        Icons.more_vert,
 												        color: Colors.white,
 											        ),
-											        onPressed: null),
+											        onSelected: (String selected){
+											        	if(selected == 'delete'){
+											        		Firestore.instance.collection("Todos").document(doc.id).delete();
+													        Navigator.pop(context, false);
+												        }
+											        },
+											        itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
+												        const PopupMenuItem<String>(
+													        value: 'delete',
+													        child: Text('Delete')
+												        ),
+												        const PopupMenuItem<String>(
+													        value: 'archive',
+													        child: Text('Archive')
+												        ),
+												        const PopupMenuItem<String>(
+													        value: 'info',
+													        child: Text('Info')
+												        ),
+											        ],
+										        ),
 										      ],
 										    ),
 									    ))
@@ -112,6 +140,10 @@ class DetailPage extends StatelessWidget{
 						    title: new Text(doc.tag.join(",")),
 					    ),
 					    new Divider(color: Colors.grey,),
+					    new ListTile(
+						    leading: new Icon(Icons.android),
+						    title: new Text(doc.id),
+					    )
 				    ]
 			    )
 		    ),

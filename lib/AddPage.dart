@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import "DateTimePicker.dart";
+import 'Todo.dart';
 
 class AddPage extends StatefulWidget{
+	final Todo todo;
+	AddPage({Key key, @required this.todo}) : super (key: key);
+
 	@override
 	State createState () => new AddPageState();
 }
@@ -11,20 +15,37 @@ class AddPage extends StatefulWidget{
 DateTime _date = new DateTime.now();
 TimeOfDay _time = new TimeOfDay.now();
 
-List<String> _selectedTags = [];
+List<dynamic> _selectedTags = [];
 
 class AddPageState extends State<AddPage>{
 	//const AddPage({Key key, this.title}) : super(key: key);
 
 	final TextEditingController _titleTextController = new TextEditingController();
 	final TextEditingController _descriptionTextControllder = new TextEditingController();
-	final TextEditingController _tagsViewController = new TextEditingController();
 	//final String title;
 	String _tags = "タグを編集...";
+	bool _iseditmode = false;
+	String _title = "";
+
 
 	//DateTime _fromDate = new DateTime.now();
 	//TimeOfDay _fromTime = const TimeOfDay(hour: 7, minute: 28);
 
+	// どこかのライフサイクル？
+	@override
+	void initState() {
+		super.initState();
+		if(widget.todo != null){
+			_iseditmode = true;
+			_titleTextController.text = widget.todo.title;
+			_descriptionTextControllder.text = widget.todo.description;
+			_tags = widget.todo.tag.join(",");
+			_selectedTags = widget.todo.tag;
+		}
+
+		if(_iseditmode) _title = "編集";
+		else _title = "追加";
+	}
 
 	@override
 	Widget build(BuildContext context) {
@@ -35,7 +56,7 @@ class AddPageState extends State<AddPage>{
 					onPressed: (){
 						Navigator.of(context).pop();
 					}),
-				title: new Text("Add"),
+				title: new Text(_title),
 				bottom: PreferredSize(
 					preferredSize: const Size.fromHeight(48.0),
 					child: Theme(
@@ -71,13 +92,30 @@ class AddPageState extends State<AddPage>{
 					IconButton(
 						icon: new Icon(Icons.check),
 						onPressed: (){
-							Firestore.instance.collection("Todos").document().setData({
-								"title": _titleTextController.text,
-								"description": _descriptionTextControllder.text,
-								"vote": _date.day,
-								"deadline": new DateTime(_date.year,_date.month,_date.day,_time.hour,_time.minute),
-								"tag": []
-							});
+							if(_titleTextController.text == ""){
+								Scaffold.of(context).showSnackBar(new SnackBar(
+									content: new Text("Input Title...")
+								));
+								return;
+							}
+							if(_iseditmode){
+								Firestore.instance.collection("Todos").document(widget.todo.id).updateData({
+									"title": _titleTextController.text,
+									"description": _descriptionTextControllder.text,
+									"vote": _date.day,
+									"deadline": new DateTime(_date.year, _date.month, _date.day, _time.hour, _time.minute)
+								});
+								Navigator.of(context).pop();
+							}
+							else{
+								Firestore.instance.collection("Todos").document().setData({
+									"title": _titleTextController.text,
+									"description": _descriptionTextControllder.text,
+									"vote": _date.day,
+									"deadline": new DateTime(_date.year,_date.month,_date.day,_time.hour,_time.minute),
+									"tag": []
+								});
+							}
 							Navigator.of(context).pop();
 						}
 					),
