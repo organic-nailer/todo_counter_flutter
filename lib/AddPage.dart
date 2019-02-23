@@ -113,7 +113,7 @@ class AddPageState extends State<AddPage>{
 									"description": _descriptionTextControllder.text,
 									"vote": _date.day,
 									"deadline": new DateTime(_date.year,_date.month,_date.day,_time.hour,_time.minute),
-									"tag": []
+									"tag": _selectedTags
 								});
 							}
 							Navigator.of(context).pop();

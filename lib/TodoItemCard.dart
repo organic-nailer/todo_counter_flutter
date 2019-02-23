@@ -26,12 +26,6 @@ Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
 						builder: (context) => DetailPage(doc: new Todo.fromDoc(document),),
 					),
 				);
-				Scaffold.of(context).showSnackBar(new SnackBar(
-					content: new Text(
-						document['title'] + " Tapped",
-						style: new TextStyle(fontFamily: "NotoSansJP"),
-					),
-				));
 			},
 			child: new ListTile(
 				//leading: new Text(_title.substring(0,1)),
