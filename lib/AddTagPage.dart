@@ -2,15 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddTagPage extends StatefulWidget{
+	List<dynamic> preselected;
+	AddTagPage({Key key, @required this.preselected}) : super(key: key);
 	@override
 	State createState () => new AddTagPageState();
 }
 
 class AddTagPageState extends State<AddTagPage>{
 
-	var _selected = new List<String>();
+	var _selected = new List<dynamic>();
 
 	final TextEditingController _AddTagDialogController = new TextEditingController();
+
+	@override
+	void initState() {
+        super.initState();
+        if(widget.preselected != null){
+        	_selected = widget.preselected;
+        }
+  }
 
 	@override
 	Widget build(BuildContext context) {
@@ -58,10 +68,9 @@ class AddTagPageState extends State<AddTagPage>{
 			title: new Text(_tag),
 			value: _isSelect,
 			onChanged: (next){
-				if(next) _selected.add(_tag);
-				else _selected.remove(_tag);
-
 				setState(() {
+					if(next) _selected.add(_tag);
+					else _selected.remove(_tag);
 					_isSelect = next;
 				});
 			}

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import "DateTimePicker.dart";
 import 'Todo.dart';
+import 'AddTagPage.dart';
 
 class AddPage extends StatefulWidget{
 	final Todo todo;
@@ -41,6 +42,9 @@ class AddPageState extends State<AddPage>{
 			_descriptionTextControllder.text = widget.todo.description;
 			_tags = widget.todo.tag.join(",");
 			_selectedTags = widget.todo.tag;
+		}
+		else{
+			_selectedTags = [];
 		}
 
 		if(_iseditmode) _title = "編集";
@@ -165,7 +169,12 @@ class AddPageState extends State<AddPage>{
 						  	),
 						  ),
 							onTap: () async {
-								var _result = (await Navigator.of(context).pushNamed("/add/tag")).toString();
+								var _result = (await Navigator.push(
+									context,
+									MaterialPageRoute(
+										builder: (context) => AddTagPage(preselected: _selectedTags,)
+									)
+								)).toString();
 								if(_result != ""){
 									setState(() {
 										_tags = _result;
