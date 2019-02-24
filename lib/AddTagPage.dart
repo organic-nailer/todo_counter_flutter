@@ -13,6 +13,7 @@ class AddTagPageState extends State<AddTagPage>{
 	List<String> _searchResult = [];
 
 	final TextEditingController _SearchTextController = new TextEditingController();
+	final TextEditingController _AddTagDialogController = new TextEditingController();
 
 	@override
 	Widget build(BuildContext context) {
@@ -22,6 +23,12 @@ class AddTagPageState extends State<AddTagPage>{
 	    appBar: new AppBar(
 		    title: new Text("Tag"),
 		    actions: <Widget>[
+		    	new IconButton(
+				    icon: new Icon(
+					    Icons.add,
+					    color: Colors.white,
+				    ),
+				    onPressed: _showdialog),
 		    	new IconButton(
 				    icon: new Icon(Icons.check),
 				    onPressed: (){
@@ -155,5 +162,52 @@ class AddTagPageState extends State<AddTagPage>{
 			}
 		);
 	}
-}
 
+	_showdialog() async {
+		await showDialog(
+			context: context,
+			builder: (BuildContext context){
+				return AlertDialog(
+					title: new Text("タグを追加"),
+					content: new Row(
+						children: <Widget>[
+							new Expanded(
+								child: new TextField(
+									autofocus: true,
+									controller: _AddTagDialogController,
+									decoration: new InputDecoration(
+										hintText: 'Tag'),
+								),
+							)
+						],
+					),
+					actions: <Widget>[
+						FlatButton(
+							child: const Text("キャンセル"),
+							onPressed: () { Navigator.pop(context); }
+						),
+						FlatButton(
+							child: const Text("追加"),
+							onPressed: _AddTagDialogController.text == ""
+								? null
+								: () {
+								Navigator.pop(context, _AddTagDialogController.text);
+							}
+						)
+					]
+				);
+			}
+
+		).then<void>((value) {
+			if (value != null && value != "") {
+				Firestore.instance.collection("Tags").document().setData({
+					"tag": value,
+				});
+			}
+
+			setState(() {
+				_AddTagDialogController.text = "";
+			});
+		});
+	}
+}
