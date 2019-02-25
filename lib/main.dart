@@ -15,32 +15,37 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Flutter Demo',
-      theme: new ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
-        // counter didn't reset back to zero; the application is not restarted.
+        title: 'Flutter Demo',
+        theme: new ThemeData(
+          // This is the theme of your application.
+          //
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
+          // counter didn't reset back to zero; the application is not restarted.
 	      primaryColor: Colors.brown[500],
 	      primaryColorDark: Colors.brown[700],
 	      primaryColorLight: Colors.brown[100],
 	      accentColor: Colors.teal,
 
-      ),
-      //home: new ExpansionTileSample(),
-      //home: new MyHomePage(title: "TodoSample",),
-      routes: <String, WidgetBuilder>{
-        '/': (_) => new MyHomePage(),
-        '/add': (_) => new AddPage(),
-        '/add/tag': (_) => new AddTagPage(),
-        '/form': (_) => new MyCustomForm(),
-        '/detail': (_) => new DetailPage(),
+	        fontFamily:  "NotoSansJP",
+	        textTheme: TextTheme(
 
-      },
+	        )
+
+        ),
+        //home: new ExpansionTileSample(),
+        //home: new MyHomePage(title: "TodoSample",),
+        routes: <String, WidgetBuilder>{
+          '/': (_) => new MyHomePage(),
+          '/add': (_) => new AddPage(),
+          '/add/tag': (_) => new AddTagPage(),
+          '/form': (_) => new MyCustomForm(),
+          '/detail': (_) => new DetailPage(),
+
+        },
     );
   }
 }

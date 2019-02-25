@@ -23,7 +23,6 @@ Widget TodoItemCard(BuildContext context, Todo todo){
 					child: new Text(
 						todo.title.substring(0,1),
 						style: new TextStyle(
-							fontFamily: "NotoSansJP",
 							fontWeight: FontWeight.bold,
 						),
 					),
@@ -32,7 +31,6 @@ Widget TodoItemCard(BuildContext context, Todo todo){
 					todo.title,
 					style: new TextStyle(
 						fontSize: 25.0,
-						fontFamily: "NotoSansJP"
 					),
 				),
 				subtitle: new SizedBox(
@@ -58,7 +56,6 @@ Widget TodoItemCard(BuildContext context, Todo todo){
 					              child: new Text(
 					                  todo.tag[index].toString(),
 					                  style: new TextStyle(
-						                  fontFamily: "NotoSansJP",
 					                      fontSize: 15.0,
 					                  ),
 					              ),
@@ -84,5 +81,10 @@ Widget CountRemainView(BuildContext context, DateTime deadline){
 	else if(differ.inDays.abs() <= 365) txt += differ.inDays.toString() + "日";
 	else txt += (differ.inDays / 365.0).toStringAsFixed(2) + "年";
 
-	return new Text(txt, style: new TextStyle(fontSize: 30.0),);
+	return new Text(
+		txt,
+		style: new TextStyle(
+			fontSize: 30.0,
+		),
+	);
 }
