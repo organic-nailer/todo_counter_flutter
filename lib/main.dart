@@ -143,7 +143,7 @@ class TimeLinePage extends StatelessWidget{
             itemCount: snapshot.data.documents.length,
             padding: const EdgeInsets.only(top: 10.0),
             //itemExtent: 100.0,
-            itemBuilder: (context, index) => TodoItemCard(context, snapshot.data.documents[index]),
+            itemBuilder: (context, index) => TodoItemCard(context, new Todo.fromDoc(snapshot.data.documents[index])),
           );
         });
   }

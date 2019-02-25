@@ -4,17 +4,7 @@ import 'Todo.dart';
 import 'DetailPage.dart';
 
 // ignore: non_constant_identifier_names
-Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
-
-
-	final List<dynamic> Tags = document["tag"];
-	//final String _title = document['title'];
-	final int _remain = document['vote'];
-	//final List<dynamic> Tags = ["hoge","piyo","huga"];
-	String _title = document['title'];
-	//final String _remain = "2";
-
-	if(_title == "") _title = "Null";
+Widget TodoItemCard(BuildContext context, Todo todo){
 
 	return new Card(
 		color: Colors.white,
@@ -23,17 +13,15 @@ Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
 				Navigator.push(
 					context,
 					MaterialPageRoute(
-						builder: (context) => DetailPage(doc: new Todo.fromDoc(document),),
+						builder: (context) => DetailPage(doc: todo,),
 					),
 				);
 			},
 			child: new ListTile(
-				//leading: new Text(_title.substring(0,1)),
 				leading: new CircleAvatar(
 					backgroundColor: Theme.of(context).primaryColor,
 					child: new Text(
-						//"Hi-Fi".substring(0,1),
-						_title.substring(0,1),
+						todo.title.substring(0,1),
 						style: new TextStyle(
 							fontFamily: "NotoSansJP",
 							fontWeight: FontWeight.bold,
@@ -41,7 +29,7 @@ Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
 					),
 				),
 				title: new Text(
-					document['title'],
+					todo.title,
 					style: new TextStyle(
 						fontSize: 25.0,
 						fontFamily: "NotoSansJP"
@@ -51,7 +39,7 @@ Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
 					width: 100.0,
 				  height: 40.0,
 				  child: new ListView.builder(
-				  	itemCount: Tags.length,
+				  	itemCount: todo.tag.length,
 				  	scrollDirection: Axis.horizontal,
 				  	padding: const EdgeInsets.only(top: 1.0),
 				  	itemBuilder: (context, int index) {
@@ -68,7 +56,7 @@ Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
 						      child: Padding(
 					              padding: const EdgeInsets.all(4.0),
 					              child: new Text(
-					                  Tags[index].toString(),
+					                  todo.tag[index].toString(),
 					                  style: new TextStyle(
 						                  fontFamily: "NotoSansJP",
 					                      fontSize: 15.0,
@@ -79,19 +67,22 @@ Widget TodoItemCard(BuildContext context, DocumentSnapshot document){
 				  		);
 				  	}),
 				),
-				/*subtitle: new Text(
-					document['description'],
-					style: new TextStyle(fontFamily: "NotoSansJP"),
-				),*/
-				trailing: new Text(
-					"残り"+ _remain.toString() +"日",
-					style: new TextStyle(
-						fontSize: 30.0,
-						fontFamily: "NotoSansJP",
-					),
-				),
-				//trailing: new RemainingCounter(_todoitem.date),
+				trailing: CountRemainView(context, todo.deadline)
 			),
 		),
 	);
+}
+
+Widget CountRemainView(BuildContext context, DateTime deadline){
+	var Time_now = new DateTime.now();
+	Duration differ = deadline.difference(Time_now);
+	var txt = "残り";
+
+	if(differ.inSeconds.abs() <= 60) txt += differ.inSeconds.toString() + "秒";
+	else if(differ.inMinutes.abs() <= 60) txt += differ.inMinutes.toString() + "分";
+	else if(differ.inHours.abs() <= 24) txt += differ.inHours.toString() + "時間";
+	else if(differ.inDays.abs() <= 365) txt += differ.inDays.toString() + "日";
+	else txt += (differ.inDays / 365.0).toStringAsFixed(2) + "年";
+
+	return new Text(txt, style: new TextStyle(fontSize: 30.0),);
 }
