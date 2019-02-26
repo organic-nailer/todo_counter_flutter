@@ -141,14 +141,16 @@ class TimeLinePage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder(
-        stream: Firestore.instance.collection('Todos').snapshots(),
+        stream: Firestore.instance.collection('Todos').orderBy('deadline').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return const Text('Loading...');
           return new ListView.builder(
             itemCount: snapshot.data.documents.length,
             padding: const EdgeInsets.only(top: 10.0),
             //itemExtent: 100.0,
-            itemBuilder: (context, index) => TodoItemCard(context, new Todo.fromDoc(snapshot.data.documents[index])),
+            itemBuilder: (context, index){
+              return TodoItemCard(context, new Todo.fromDoc(snapshot.data.documents[index]));
+            },
           );
         });
   }
@@ -176,30 +178,6 @@ class SettingsPage extends StatelessWidget{
   Widget build(BuildContext context) {
     return new Center(
         child: new Icon(Icons.settings),
-    );
-  }
-}
-
-//残り○日の部分のUI
-class RemainingCounter extends StatelessWidget{
-  final DateTime _date;
-  RemainingCounter(this._date);
-
-  @override
-  Widget build(BuildContext context) {
-    return new Row(
-      children: <Widget>[
-        new Text(
-          "残り"
-        ),
-        new Text(
-          _date.day.toString(),
-          style: new TextStyle(fontSize: 20.0),
-        ),
-        new Text(
-          "日"
-        ),
-      ],
     );
   }
 }

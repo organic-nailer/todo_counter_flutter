@@ -7,7 +7,8 @@ import 'DetailPage.dart';
 Widget TodoItemCard(BuildContext context, Todo todo){
 
 	return new Card(
-		color: Colors.white,
+		//color: Color.fromARGB(125, - todo.deadline.difference(new DateTime.now()).inDays, 0, 0),
+		color: MatchwithDeadColor(todo.deadline),
 		child: new InkWell(
 			onTap: (){_pushToEditPage(context, todo);},
 			child: GestureDetector(
@@ -119,4 +120,14 @@ Widget CountRemainView(BuildContext context, DateTime deadline){
 			fontSize: 30.0,
 		),
 	);
+}
+
+Color MatchwithDeadColor(DateTime deadline){
+	Duration differ = deadline.difference(new DateTime.now());
+
+	if(differ.isNegative) return Color.fromARGB(255, 255, 0, 0);
+	else if(differ.inDays <= 1) return Color.fromARGB(255, 255, 125, 0);
+	else if(differ.inDays <= 7) return Color.fromARGB(255, 255, 255, 0);
+	else if(differ.inDays <= 30) return Color.fromARGB(255, 255, 255, 125);
+	else return Color.fromARGB(255, 255, 255, 255);
 }
