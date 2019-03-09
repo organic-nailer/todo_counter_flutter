@@ -102,23 +102,35 @@ class AddPageState extends State<AddPage>{
 								));
 								return;
 							}
-							if(_iseditmode){
-								Firestore.instance.collection("Todos").document(widget.todo.id).updateData({
-									"title": _titleTextController.text,
+
+							var item = {
+								"title": _titleTextController.text,
+								"description": {
 									"description": _descriptionTextControllder.text,
-									"vote": _date.day,
-									"deadline": new DateTime(_date.year, _date.month, _date.day, _time.hour, _time.minute)
-								});
+								},
+								"time": {
+									"deadline": _date.day,
+									"createdat": new DateTime.now(),
+								},
+								"tag": _selectedTags,
+								"done": false,
+								"notify": {},
+								"genre": "TASK",
+								"other_data": {},
+							};
+
+							if(_iseditmode){
+								Firestore.instance
+										 .collection("Todos")
+										 .document(widget.todo.id)
+										 .updateData(item);
 								Navigator.of(context).pop();
 							}
 							else{
-								Firestore.instance.collection("Todos").document().setData({
-									"title": _titleTextController.text,
-									"description": _descriptionTextControllder.text,
-									"vote": _date.day,
-									"deadline": new DateTime(_date.year,_date.month,_date.day,_time.hour,_time.minute),
-									"tag": _selectedTags
-								});
+								Firestore.instance
+										 .collection("Todos")
+										 .document()
+										 .setData(item);
 							}
 							Navigator.of(context).pop();
 						}
@@ -129,7 +141,7 @@ class AddPageState extends State<AddPage>{
 				children: <Widget>[
 
 					new ListTile(
-						leading: new Icon(Icons.schedule),
+						leading: new Icon(Icons.info),
 						title: new Text("タスク"),
 						subtitle: new Text("example@example.com"),
 					),
@@ -149,7 +161,7 @@ class AddPageState extends State<AddPage>{
 							controller: _descriptionTextControllder,
 							decoration: new InputDecoration(
 								border: InputBorder.none,
-								hintText: "詳細",
+								hintText: "説明を追加...",
 								hintStyle: new TextStyle(
 									color: Colors.black,
 									fontFamily: "NotoSansJP",
@@ -158,6 +170,11 @@ class AddPageState extends State<AddPage>{
 						),
 					),
 					new Divider(color: Colors.grey,),
+					new ListTile(
+						leading: new Icon(Icons.notifications),
+						title: new Text("通知を追加..."),
+					),
+					new Divider(color: Colors.grey),
 					new ListTile(
 						leading: new Icon(Icons.label),
 						title: new InkWell(

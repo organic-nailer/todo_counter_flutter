@@ -7,7 +7,6 @@ import 'DetailPage.dart';
 Widget TodoItemCard(BuildContext context, Todo todo){
 
 	return new Card(
-		//color: Color.fromARGB(125, - todo.deadline.difference(new DateTime.now()).inDays, 0, 0),
 		color: MatchwithDeadColor(todo.deadline),
 		child: new InkWell(
 			onTap: (){_pushToEditPage(context, todo);},

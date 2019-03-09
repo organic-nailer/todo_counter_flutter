@@ -17,3 +17,27 @@ class Todo{
 		this.tag = document['tag'];
 	}
 }
+
+class TaskItem{
+	String id; //Firebaseで自動生成されたものを使う
+	String title;
+	Map<String, dynamic> description;
+	Map<String, dynamic> time;
+	List<dynamic> tag;
+	String genre; // [ Task, Habit, Goal, Schedule ]
+	bool done;
+	Map<String, dynamic> notify;
+	Map<String, dynamic> other_data; //その他のデータを保存
+
+	TaskItem(DocumentSnapshot doc){
+		this.id = doc.documentID;
+		this.title = doc["title"];
+		this.description = {};
+		this.time = {};
+		this.tag = doc["tag"];
+		this.done = doc["done"];
+		this.notify = {};
+		this.genre = doc["genre"];
+		this.other_data = {};
+	}
+}
