@@ -149,7 +149,7 @@ class TimeLinePage extends StatelessWidget{
             padding: const EdgeInsets.only(top: 10.0),
             //itemExtent: 100.0,
             itemBuilder: (context, index){
-              return TodoItemCard(context, new Todo.fromDoc(snapshot.data.documents[index]));
+              return TodoItemCard(context, new TaskItem(snapshot.data.documents[index]));
             },
           );
         });

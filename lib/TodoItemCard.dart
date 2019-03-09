@@ -4,10 +4,10 @@ import 'Todo.dart';
 import 'DetailPage.dart';
 
 // ignore: non_constant_identifier_names
-Widget TodoItemCard(BuildContext context, Todo todo){
+Widget TodoItemCard(BuildContext context, TaskItem todo){
 
 	return new Card(
-		color: MatchwithDeadColor(todo.deadline),
+		color: MatchwithDeadColor(todo.time["deadline"]),
 		child: new InkWell(
 			onTap: (){_pushToEditPage(context, todo);},
 			child: GestureDetector(
@@ -86,14 +86,14 @@ Widget TodoItemCard(BuildContext context, Todo todo){
 			  	  	}),
 			  	)
 			  	: null,
-			  	trailing: CountRemainView(context, todo.deadline)
+			  	trailing: CountRemainView(context, todo.time["deadline"])
 			  ),
 			),
 		),
 	);
 }
 
-void _pushToEditPage(BuildContext context, Todo todo){
+void _pushToEditPage(BuildContext context, TaskItem todo){
 	Navigator.push(
 		context,
 		MaterialPageRoute(

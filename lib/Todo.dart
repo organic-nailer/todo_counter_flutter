@@ -21,19 +21,19 @@ class Todo{
 class TaskItem{
 	String id; //Firebaseで自動生成されたものを使う
 	String title;
-	Map<String, dynamic> description;
-	Map<String, dynamic> time;
+	Map<dynamic, dynamic> description;
+	Map<dynamic, dynamic> time;
 	List<dynamic> tag;
 	String genre; // [ Task, Habit, Goal, Schedule ]
 	bool done;
-	Map<String, dynamic> notify;
-	Map<String, dynamic> other_data; //その他のデータを保存
+	Map<dynamic, dynamic> notify;
+	Map<dynamic, dynamic> other_data; //その他のデータを保存
 
 	TaskItem(DocumentSnapshot doc){
 		this.id = doc.documentID;
 		this.title = doc["title"];
 		this.description = {};
-		this.time = {};
+		this.time = doc["time"];
 		this.tag = doc["tag"];
 		this.done = doc["done"];
 		this.notify = {};

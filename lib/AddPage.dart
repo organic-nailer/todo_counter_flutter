@@ -6,7 +6,7 @@ import 'Todo.dart';
 import 'AddTagPage.dart';
 
 class AddPage extends StatefulWidget{
-	final Todo todo;
+	final TaskItem todo;
 	AddPage({Key key, @required this.todo}) : super (key: key);
 
 	@override
@@ -39,7 +39,7 @@ class AddPageState extends State<AddPage>{
 		if(widget.todo != null){
 			_iseditmode = true;
 			_titleTextController.text = widget.todo.title;
-			_descriptionTextControllder.text = widget.todo.description;
+			_descriptionTextControllder.text = widget.todo.description["description"];
 			_tags = widget.todo.tag.join(",");
 			_selectedTags = widget.todo.tag;
 		}
@@ -109,7 +109,7 @@ class AddPageState extends State<AddPage>{
 									"description": _descriptionTextControllder.text,
 								},
 								"time": {
-									"deadline": _date.day,
+									"deadline": new DateTime(_date.year,_date.month,_date.day,_time.hour,_time.minute),
 									"createdat": new DateTime.now(),
 								},
 								"tag": _selectedTags,

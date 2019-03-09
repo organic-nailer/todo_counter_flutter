@@ -6,7 +6,7 @@ import 'AddPage.dart';
 
 class DetailPage extends StatelessWidget{
 	double appBarHeight = 128.0;
-	Todo doc;
+	TaskItem doc;
 
 	DetailPage({Key key, @required this.doc}) : super(key: key);
 
@@ -127,12 +127,12 @@ class DetailPage extends StatelessWidget{
 				        new Divider(color: Colors.grey,),
 				        new ListTile(
 					        leading: new Icon(Icons.calendar_today),
-					        title: new Text(doc.deadline.toString()),
+					        title: new Text(doc.time["deadline"].toString()),
 				        ),
 				        new Divider(color: Colors.grey,),
 					    new ListTile(
 						    leading: new Icon(Icons.description),
-						    title: new Text(doc.description),
+						    title: new Text(doc.description["description"]),
 					    ),
 					    new Divider(color: Colors.grey,),
 					    new ListTile(
