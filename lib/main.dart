@@ -141,7 +141,7 @@ class TimeLinePage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder(
-        stream: Firestore.instance.collection('Todos').orderBy('deadline').snapshots(),
+        stream: Firestore.instance.collection('Todos').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return const Text('Loading...');
           return new ListView.builder(
