@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import "DateTimePicker.dart";
 import 'Todo.dart';
 import 'AddTagPage.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class AddPage extends StatefulWidget{
 	final TaskItem todo;
@@ -32,6 +33,8 @@ class AddPageState extends State<AddPage>{
 	//DateTime _fromDate = new DateTime.now();
 	//TimeOfDay _fromTime = const TimeOfDay(hour: 7, minute: 28);
 
+
+	var flutterLocalNotificationsPlugin;
 	// どこかのライフサイクル？
 	@override
 	void initState() {
@@ -42,6 +45,8 @@ class AddPageState extends State<AddPage>{
 			_descriptionTextControllder.text = widget.todo.description["description"];
 			_tags = widget.todo.tag.join(",");
 			_selectedTags = widget.todo.tag;
+			_date = widget.todo.time["deadline"];
+			_time = TimeOfDay.fromDateTime(_date);
 		}
 		else{
 			_selectedTags = [];
@@ -49,6 +54,15 @@ class AddPageState extends State<AddPage>{
 
 		if(_iseditmode) _title = "編集";
 		else _title = "追加";
+
+
+		var initializationSettingsAndroid = new AndroidInitializationSettings("app_icon");
+		var initializationSettingsIOS = new IOSInitializationSettings();
+		var initializationSettings = new InitializationSettings(
+			initializationSettingsAndroid, initializationSettingsIOS);
+		flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+		flutterLocalNotificationsPlugin.initialize(
+			initializationSettings, onSelectNotification: onSelectNotification);
 	}
 
 	@override
@@ -119,6 +133,8 @@ class AddPageState extends State<AddPage>{
 								"other_data": {},
 							};
 
+							_showNotificationInBackground(item["title"], new DateTime(_date.year, _date.month, _date.day, _time.hour, _time.minute));
+
 							if(_iseditmode){
 								Firestore.instance
 										 .collection("Todos")
@@ -148,7 +164,7 @@ class AddPageState extends State<AddPage>{
 					new Divider(color: Colors.grey,),
 					new ListTile(
 						leading: new Icon(Icons.date_range),
-						title: DateTimePickerw(),
+						title: DateTimePicker_stateful(),
 					),
 					new Divider(color: Colors.grey,),
 					new ListTile(
@@ -212,14 +228,40 @@ class AddPageState extends State<AddPage>{
 			)
 		);
 	}
+
+	Future onSelectNotification(String payload) async {
+		showDialog(
+			context: context,
+			builder: (_) {
+				return new AlertDialog(
+					title: Text("PayLoad"),
+					content: Text("Payload : $payload"),
+				);
+			},
+		);
+	}
+
+	Future _showNotificationInBackground(String title, date) async {
+		var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+			"notification_channel_id",
+			"Channel Name",
+			"Here we will put the description about the Channel",
+			importance: Importance.Max, priority: Priority.High
+		);
+		var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+		var platformChannelSpecifics = new NotificationDetails(
+			androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+		await flutterLocalNotificationsPlugin.schedule(0, "title", title,
+			date, platformChannelSpecifics);
+	}
 }
 
-class DateTimePickerw extends StatefulWidget{
+class DateTimePicker_stateful extends StatefulWidget{
 	@override
-	_DateTimePickerwState createState() => new _DateTimePickerwState();
+	_DateTimePickerState createState() => new _DateTimePickerState();
 }
 
-class _DateTimePickerwState extends State<DateTimePickerw>{
+class _DateTimePickerState extends State<DateTimePicker_stateful>{
 
 	//DateTime _date = new DateTime.now();
 	//TimeOfDay _time = TimeOfDay.now();

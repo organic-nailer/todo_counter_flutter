@@ -1,14 +1,18 @@
 name: todo_counter_flutter
 description: A todo application that counts day
 
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
 dependencies:
   flutter:
     sdk: flutter
-  cloud_firestore: ^0.7.0 #new
+  cloud_firestore: ^0.9.5+2 #new
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.0
+  cupertino_icons: ^0.1.2
+  flutter_local_notifications: ^0.5.2
 
 dev_dependencies:
   flutter_test:

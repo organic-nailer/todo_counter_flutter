@@ -32,7 +32,7 @@ class TaskItem{
 	TaskItem(DocumentSnapshot doc){
 		this.id = doc.documentID;
 		this.title = doc["title"];
-		this.description = {};
+		this.description = doc["description"];
 		this.time = doc["time"];
 		this.tag = doc["tag"];
 		this.done = doc["done"];

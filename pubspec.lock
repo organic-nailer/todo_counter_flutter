@@ -28,7 +28,7 @@ packages:
       name: cloud_firestore
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.2"
+    version: "0.9.5+2"
   collection:
     dependency: transitive
     description:
@@ -49,12 +49,19 @@ packages:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.3"
+    version: "0.3.1+1"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_local_notifications:
+    dependency: "direct main"
+    description:
+      name: flutter_local_notifications
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -87,7 +94,14 @@ packages:
       name: pedantic
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.0"
+    version: "1.5.0"
+  platform:
+    dependency: transitive
+    description:
+      name: platform
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.0"
   quiver:
     dependency: transitive
     description:
@@ -106,7 +120,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.4"
+    version: "1.5.5"
   stack_trace:
     dependency: transitive
     description:
@@ -157,5 +171,5 @@ packages:
     source: hosted
     version: "2.0.8"
 sdks:
-  dart: ">=2.1.0 <3.0.0"
+  dart: ">=2.1.1-dev.0.0 <3.0.0"
   flutter: ">=0.2.4 <2.0.0"

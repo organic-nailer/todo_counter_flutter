@@ -7,6 +7,7 @@ import 'AddPage.dart';
 import 'AddTagPage.dart';
 import 'DetailPage.dart';
 import 'Todo.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() => runApp(new MyApp());
 
@@ -96,7 +97,9 @@ class _MyHomePageState extends State<MyHomePage>{
 	    floatingActionButton: new FloatingActionButton(
 		    child: new Icon(Icons.add),
 		    onPressed: (){
-              Navigator.of(context).pushNamed("/add");
+                Navigator.of(context).pushNamed("/add");
+			    //_showNotificationWithDefaultSound();
+			    //_showNotificationInBackground();
             }),
     );
   }
@@ -115,12 +118,22 @@ class _MyHomePageState extends State<MyHomePage>{
     );
   }
 
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
     _pageController = new PageController();
+
+    var initializationSettingsAndroid = new AndroidInitializationSettings("app_icon");
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings, onSelectNotification: onSelectNotification);
   }
 
   @override
@@ -129,6 +142,48 @@ class _MyHomePageState extends State<MyHomePage>{
     super.dispose();
 
     _pageController.dispose();
+  }
+
+  Future onSelectNotification(String payload) async {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return new AlertDialog(
+          title: Text("PayLoad"),
+          content: Text("Payload : $payload"),
+        );
+      },
+    );
+  }
+
+  Future _showNotificationWithDefaultSound() async {
+  	var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+	    "notification_channel_id",
+	    "Channel Name",
+	    "Here we will put the description about the Channel",
+	    importance: Importance.Max, priority: Priority.High
+    );
+  	var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+  	var platformChannelSpecifics = new NotificationDetails(
+	    androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+
+  	await flutterLocalNotificationsPlugin.show(0, "New Post", "How to Show Notification in flutter",
+	    platformChannelSpecifics, payload: "Default_Sound");
+  }
+
+  Future _showNotificationInBackground() async {
+	  var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+		  "notification_channel_id",
+		  "Channel Name",
+		  "Here we will put the description about the Channel",
+		  importance: Importance.Max, priority: Priority.High
+	  );
+	  var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+	  var platformChannelSpecifics = new NotificationDetails(
+		  androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  	var date = new DateTime.now().add(new Duration(minutes: 1));
+  	await flutterLocalNotificationsPlugin.schedule(0, "Scheduled", "Hello,Notification",
+	    date, platformChannelSpecifics);
   }
 }
 
