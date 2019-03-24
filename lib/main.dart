@@ -8,6 +8,9 @@ import 'AddTagPage.dart';
 import 'DetailPage.dart';
 import 'Todo.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'LoginPage.dart';
 
 void main() => runApp(new MyApp());
 
@@ -45,7 +48,7 @@ class MyApp extends StatelessWidget {
           '/add/tag': (_) => new AddTagPage(),
           '/form': (_) => new MyCustomForm(),
           '/detail': (_) => new DetailPage(),
-
+	        '/login': (_) => new LoginPage(),
         },
     );
   }
@@ -97,7 +100,8 @@ class _MyHomePageState extends State<MyHomePage>{
 	    floatingActionButton: new FloatingActionButton(
 		    child: new Icon(Icons.add),
 		    onPressed: (){
-                Navigator.of(context).pushNamed("/add");
+                //Navigator.of(context).pushNamed("/add");
+			    Navigator.of(context).pushNamed("/login");
 			    //_showNotificationWithDefaultSound();
 			    //_showNotificationInBackground();
             }),
@@ -118,22 +122,12 @@ class _MyHomePageState extends State<MyHomePage>{
     );
   }
 
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
     _pageController = new PageController();
-
-    var initializationSettingsAndroid = new AndroidInitializationSettings("app_icon");
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    flutterLocalNotificationsPlugin.initialize(
-      initializationSettings, onSelectNotification: onSelectNotification);
   }
 
   @override
@@ -142,48 +136,6 @@ class _MyHomePageState extends State<MyHomePage>{
     super.dispose();
 
     _pageController.dispose();
-  }
-
-  Future onSelectNotification(String payload) async {
-    showDialog(
-      context: context,
-      builder: (_) {
-        return new AlertDialog(
-          title: Text("PayLoad"),
-          content: Text("Payload : $payload"),
-        );
-      },
-    );
-  }
-
-  Future _showNotificationWithDefaultSound() async {
-  	var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-	    "notification_channel_id",
-	    "Channel Name",
-	    "Here we will put the description about the Channel",
-	    importance: Importance.Max, priority: Priority.High
-    );
-  	var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-  	var platformChannelSpecifics = new NotificationDetails(
-	    androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-
-  	await flutterLocalNotificationsPlugin.show(0, "New Post", "How to Show Notification in flutter",
-	    platformChannelSpecifics, payload: "Default_Sound");
-  }
-
-  Future _showNotificationInBackground() async {
-	  var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-		  "notification_channel_id",
-		  "Channel Name",
-		  "Here we will put the description about the Channel",
-		  importance: Importance.Max, priority: Priority.High
-	  );
-	  var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-	  var platformChannelSpecifics = new NotificationDetails(
-		  androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-  	var date = new DateTime.now().add(new Duration(minutes: 1));
-  	await flutterLocalNotificationsPlugin.schedule(0, "Scheduled", "Hello,Notification",
-	    date, platformChannelSpecifics);
   }
 }
 
@@ -196,7 +148,7 @@ class TimeLinePage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder(
-        stream: Firestore.instance.collection('Todos').snapshots(),
+        stream: Firestore.instance.collection('Todos').where("done", isEqualTo: false).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return const Text('Loading...');
           return new ListView.builder(
@@ -224,15 +176,137 @@ class GenrePage extends StatelessWidget{
   }
 }
 
-class SettingsPage extends StatelessWidget{
-  const SettingsPage({Key key, this.title}) : super(key: key);
+class SettingsPage extends StatefulWidget{
+  SettingsPage({Key key, this.title}) : super(key: key);
 
   final String title;
+  FirebaseUser _user;
+
 
   @override
-  Widget build(BuildContext context) {
-    return new Center(
-        child: new Icon(Icons.settings),
-    );
+  State createState () => new SettingsPageState();
+
+
+}
+
+class SettingsPageState extends State<SettingsPage>{
+
+	FirebaseUser _user;
+	GoogleSignInAccount _currentUser;
+	String _username = "";
+	String _userid = "";
+	String _useremail = "";
+	String _photo;
+
+	@override
+	Widget build(BuildContext context) {
+		return new Container(
+			child: _user == null
+				? _buildGoogleSignInButton()
+				: new Center(
+				child: new Icon(Icons.add_shopping_cart),
+			),
+		);
+	}
+
+	Widget _buildGoogleSignInButton() {
+		return Column(
+			mainAxisAlignment: MainAxisAlignment.center,
+			children: <Widget>[
+				Center(
+					child: RaisedButton(
+						child: Text("Google Sign In"),
+						onPressed: (){
+							/*_handleGoogleSignIn().then((user){
+								setState(() {
+									_user = user;
+								});
+							}).catchError((error){
+								print(error);
+							});*/
+							_handleSignIn();
+						}
+					),
+				),
+				Center(
+					child: RaisedButton(
+						child: Text(_currentUser != null
+									? _currentUser.displayName
+									: "No User"),
+						onPressed: (){
+							_handleSignOut();
+						}),
+				),
+				Image.network(_photo != null ? _photo : "https://via.placeholder.com/150"),
+				Text(_username),
+				Text(_userid),
+				Text(_useremail),
+
+			],
+		);
+	}
+
+
+	var _googleSignIn = new GoogleSignIn(
+		scopes: [
+			"email",
+			"https://www.googleapis.com/auth/contacts.readonly",
+		],
+	);
+	final _auth = FirebaseAuth.instance;
+
+	@override
+	void initState() {
+        super.initState();
+        _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account){
+        	setState(() {
+        	  _currentUser = account;
+	          if(_currentUser != null){
+		          _photo = _currentUser.photoUrl;
+		          _userid = _currentUser.id;
+		          _useremail = _currentUser.email;
+		          _username = _currentUser.displayName;
+	          }
+        	});
+
+	        print(_currentUser);
+        });
+        _googleSignIn.signInSilently();
   }
+
+	Future<void> _handleSignIn() async{
+		try{
+			GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+			print("googleUser:");
+			print(googleUser);
+			GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+			AuthCredential credential = GoogleAuthProvider.getCredential(
+				accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+			FirebaseUser user = await _auth.signInWithCredential(credential);
+			print(user);
+			setState(() {
+			  _currentUser = googleUser;
+			  _photo = user.photoUrl;
+			  _userid = user.uid;
+			  _useremail = user.email;
+			  _username = user.displayName;
+			});
+
+		} catch(error) {
+			print("error:");
+			print(error);
+		}
+	}
+
+	Future<void> _handleSignOut() async{
+		_googleSignIn.disconnect();
+		await FirebaseAuth.instance.signOut();
+		setState(() {
+		  _currentUser = null;
+		  _photo = "https://via.placeholder.com/150";
+		  _userid = "";
+		  _useremail = "example@example.com";
+		  _username = "NO DATA";
+		});
+	}
 }

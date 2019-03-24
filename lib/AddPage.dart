@@ -133,7 +133,7 @@ class AddPageState extends State<AddPage>{
 								"other_data": {},
 							};
 
-							_showNotificationInBackground(item["title"], new DateTime(_date.year, _date.month, _date.day, _time.hour, _time.minute));
+							_showNotificationInBackground("", item["title"], new DateTime(_date.year, _date.month, _date.day, _time.hour, _time.minute));
 
 							if(_iseditmode){
 								Firestore.instance
@@ -241,7 +241,7 @@ class AddPageState extends State<AddPage>{
 		);
 	}
 
-	Future _showNotificationInBackground(String title, date) async {
+	Future _showNotificationInBackground(String id, String title, date) async {
 		var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
 			"notification_channel_id",
 			"Channel Name",
@@ -251,7 +251,7 @@ class AddPageState extends State<AddPage>{
 		var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
 		var platformChannelSpecifics = new NotificationDetails(
 			androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-		await flutterLocalNotificationsPlugin.schedule(0, "title", title,
+		await flutterLocalNotificationsPlugin.schedule(id, "title", title,
 			date, platformChannelSpecifics);
 	}
 }
@@ -266,6 +266,13 @@ class _DateTimePickerState extends State<DateTimePicker_stateful>{
 	//DateTime _date = new DateTime.now();
 	//TimeOfDay _time = TimeOfDay.now();
 
+
+	@override
+	void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+	// TODO: 日付を現在時刻にする
 	@override
 	Widget build(BuildContext context) {
     // TODO: implement build

@@ -20,6 +20,13 @@ Widget TodoItemCard(BuildContext context, TaskItem todo){
 								children: <Widget>[
 									SimpleDialogOption(
 										onPressed: (){
+											Firestore.instance.collection("Todos").document(todo.id).setData({"done": true}, merge: true);
+											Navigator.pop(context);
+										},
+										child: new Text("完了とする"),
+									),
+									SimpleDialogOption(
+										onPressed: (){
 											Navigator.pop(context);
 											_pushToEditPage(context, todo);
 										},

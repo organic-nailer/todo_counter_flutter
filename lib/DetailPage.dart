@@ -151,7 +151,8 @@ class DetailPage extends StatelessWidget{
 			    child: new FloatingActionButton(
 				    child: new Icon(Icons.check),
 				    onPressed: () {
-					    print('FAB tapped!');
+					    Firestore.instance.collection("Todos").document(doc.id).setData({"done": true}, merge: true);
+					    Navigator.pop(context, false);
 				    },
 				    backgroundColor: Theme.of(context).accentColor,
 			    ),

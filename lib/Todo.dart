@@ -40,4 +40,17 @@ class TaskItem{
 		this.genre = doc["genre"];
 		this.other_data = {};
 	}
+
+	Map<String, Object> ToMap(){
+		return {
+			"title": this.title,
+			"description": this.description,
+			"time": this.time,
+			"tag": this.tag,
+			"done": this.done,
+			"notify": this.notify,
+			"genre": this.genre,
+			"other_data": this.other_data,
+		};
+	}
 }
