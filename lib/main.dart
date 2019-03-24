@@ -11,6 +11,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'LoginPage.dart';
+import 'TimeLinePage.dart';
 
 void main() => runApp(new MyApp());
 
@@ -136,30 +137,6 @@ class _MyHomePageState extends State<MyHomePage>{
     super.dispose();
 
     _pageController.dispose();
-  }
-}
-
-class TimeLinePage extends StatelessWidget{
-
-  const TimeLinePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return new StreamBuilder(
-        stream: Firestore.instance.collection('Todos').where("done", isEqualTo: false).snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return const Text('Loading...');
-          return new ListView.builder(
-            itemCount: snapshot.data.documents.length,
-            padding: const EdgeInsets.only(top: 10.0),
-            //itemExtent: 100.0,
-            itemBuilder: (context, index){
-              return TodoItemCard(context, new TaskItem(snapshot.data.documents[index]));
-            },
-          );
-        });
   }
 }
 
