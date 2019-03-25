@@ -41,6 +41,16 @@ class TaskItem{
 		this.other_data = {};
 	}
 
+	TaskItem.create(
+		this.title,
+		this.description,
+		this.time,
+		this.tag,
+		this.done,
+		this.notify,
+		this.genre,
+		this.other_data);
+
 	Map<String, Object> ToMap(){
 		return {
 			"title": this.title,
