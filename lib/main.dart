@@ -10,6 +10,7 @@ import 'Todo.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'LoginPage.dart';
 import 'TimeLinePage.dart';
 
@@ -101,8 +102,8 @@ class _MyHomePageState extends State<MyHomePage>{
 	    floatingActionButton: new FloatingActionButton(
 		    child: new Icon(Icons.add),
 		    onPressed: (){
-                //Navigator.of(context).pushNamed("/add");
-			    Navigator.of(context).pushNamed("/login");
+                Navigator.of(context).pushNamed("/add");
+			    //Navigator.of(context).pushNamed("/login");
 			    //_showNotificationWithDefaultSound();
 			    //_showNotificationInBackground();
             }),
@@ -120,6 +121,56 @@ class _MyHomePageState extends State<MyHomePage>{
         page,
         duration: const Duration(milliseconds: 300),
         curve: Curves.ease
+    );
+  }
+
+  void _fcmSetup()
+  {
+	  FirebaseMessaging _fcm = new FirebaseMessaging();
+	  _fcm.configure(
+		  onMessage: (Map<String, dynamic> message)
+		  async {
+			  print("onMessage: $message");
+			  _buildDialog(context, "onMessage");
+		  },
+		  onLaunch: (Map<String, dynamic> message)
+		  async {
+			  print("onLaunch: $message");
+			  _buildDialog(context, "onLaunch");
+		  },
+		  onResume: (Map<String, dynamic> message)
+		  async {
+			  print("onResume: $message");
+			  _buildDialog(context, "onResume");
+		  },
+	  );
+	  _fcm.requestNotificationPermissions(
+		  const IosNotificationSettings(sound: true, badge: true, alert: true));
+	  _fcm.onIosSettingsRegistered
+		  .listen((settings)
+	  {
+		  print("Settings resistered: $settings");
+	  });
+	  _fcm.subscribeToTopic("/topics/all");
+  }
+
+  void _buildDialog(BuildContext context, String message){
+  	showDialog(
+	    context: context,
+	    barrierDismissible: false,
+	    builder: (context) {
+	    	return new AlertDialog(
+			    content: new Text("Message: $message"),
+			    actions: <Widget>[
+			    	new FlatButton(
+					    onPressed: () { Navigator.pop(context, false); },
+					    child: const Text("CLOSE")),
+				    new FlatButton(
+					    onPressed: () { Navigator.pop(context, true); },
+					    child: const Text("OK")),
+			    ],
+		    );
+	    }
     );
   }
 
