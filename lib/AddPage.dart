@@ -6,6 +6,8 @@ import 'Todo.dart';
 import 'AddTagPage.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+
 class AddPage extends StatefulWidget{
 	final TaskItem todo;
 	AddPage({Key key, @required this.todo}) : super (key: key);
@@ -28,6 +30,8 @@ class AddPageState extends State<AddPage>{
 	String _tags = "タグを編集...";
 	bool _iseditmode = false;
 	String _title = "";
+
+	FirebaseUser _user;
 
 
 	//DateTime _fromDate = new DateTime.now();
@@ -63,6 +67,12 @@ class AddPageState extends State<AddPage>{
 		flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
 		flutterLocalNotificationsPlugin.initialize(
 			initializationSettings, onSelectNotification: onSelectNotification);
+
+		SigninFirebase();
+	}
+
+	void SigninFirebase() async {
+		_user = await FirebaseAuth.instance.currentUser();
 	}
 
 	@override
@@ -140,6 +150,12 @@ class AddPageState extends State<AddPage>{
 										 .collection("Todos")
 										 .document(widget.todo.id)
 										 .updateData(item);
+								Firestore.instance
+										.collection("Users")
+										.document(_user.uid)
+										.collection("Tasks")
+										.document(widget.todo.id)
+										.updateData(item);
 								Navigator.of(context).pop();
 							}
 							else{
@@ -147,6 +163,8 @@ class AddPageState extends State<AddPage>{
 										 .collection("Todos")
 										 .document()
 										 .setData(item);
+								Firestore.instance.collection("Users/${_user.uid}/Tasks")
+										.document().setData(item);
 							}
 							Navigator.of(context).pop();
 						}

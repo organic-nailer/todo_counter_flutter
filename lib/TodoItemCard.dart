@@ -7,7 +7,7 @@ import 'DetailPage.dart';
 Widget TodoItemCard(BuildContext context, TaskItem todo){
 
 	return new Card(
-		color: MatchwithDeadColor(todo.time["deadline"]),
+		color: MatchwithDeadColor(todo.time["deadline"].toDate()),
 		child: new InkWell(
 			onTap: (){_pushToEditPage(context, todo);},
 			child: GestureDetector(
@@ -93,7 +93,7 @@ Widget TodoItemCard(BuildContext context, TaskItem todo){
 			  	  	}),
 			  	)
 			  	: null,
-			  	trailing: CountRemainView(context, todo.time["deadline"])
+			  	trailing: CountRemainView(context, todo.time["deadline"].toDate())
 			  ),
 			),
 		),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class LoginPage extends StatefulWidget{
 
@@ -90,9 +92,29 @@ class LoginPageState extends State<LoginPage>{
 			print("signed in:");
 			print(_firebaseUser);
 
+			ResisterDevice(user);
+
 			Navigator.pop(context);
 		} catch(error){
 			print(error);
+		}
+  }
+
+  void ResisterDevice(FirebaseUser user) async {
+	    final FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
+	    var _token = await _firebaseMessaging.getToken();
+		var _devices = await Firestore.instance.collection("Users/${user.uid}/Devices").where("deviceID", isEqualTo: _token).getDocuments();
+		print(_devices.documents);
+		if(_devices.documents.length == 0){
+			print("not resistered");
+			Firestore.instance.collection("/Users/${user.uid}/Devices").document().setData({
+				"deviceID": _token,
+				"name": "",
+				"createdAt": DateTime.now(),
+			});
+		}
+		else{
+			print("already resistered");
 		}
   }
 }
