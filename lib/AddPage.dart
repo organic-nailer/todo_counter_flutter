@@ -39,7 +39,6 @@ class AddPageState extends State<AddPage>{
 
 
 	var flutterLocalNotificationsPlugin;
-	// どこかのライフサイクル？
 	@override
 	void initState() {
 		super.initState();
@@ -287,7 +286,6 @@ class _DateTimePickerState extends State<DateTimePicker_stateful>{
 
 	@override
 	void initState() {
-    // TODO: implement initState
     super.initState();
   }
 	// TODO: 日付を現在時刻にする
