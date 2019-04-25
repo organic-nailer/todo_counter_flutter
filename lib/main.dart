@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 import 'CustomForm.dart';
-import 'TodoItemCard.dart';
 import 'AddPage.dart';
 import 'AddTagPage.dart';
 import 'DetailPage.dart';
-import 'Todo.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'LoginPage.dart';
-import 'TimeLinePage.dart';
 import 'BottomNavigationFrame.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() => runApp(new TodoCounter());
 
@@ -66,11 +64,25 @@ class _RootPageState extends State<RootPage>{
     return new BottomNavigationFrame();
   }
 
+  var flutterLocalNotificationsPlugin;
+
   @override
   void initState() {
     super.initState();
 
+    _initFLN();
     _fcmSetup();
+  }
+
+  void _initFLN(){
+
+    var initializationSettingsAndroid = new AndroidInitializationSettings("app_icon");
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(
+        initializationSettings, onSelectNotification: onSelectNotification);
   }
 
   void _fcmSetup()//通知周りの設定
@@ -79,8 +91,15 @@ class _RootPageState extends State<RootPage>{
     _fcm.configure(
       onMessage: (Map<String, dynamic> message)
       async {
+        initializeDateFormatting("ja_JP");
         print("onMessage: $message");
         _buildDialog(context, "onMessage");
+        _initFLN();
+        Map<dynamic, dynamic> _data = message["data"];
+        print("data: $_data");
+        print("DateTime: ${DateTime.parse(_data["notifytime"]).toLocal()}");
+        print("date_now: ${DateTime.now()}");
+        _showNotificationInBackground(_data["title"], "onMessage", DateTime.parse(_data["notifytime"]));
       },
       onLaunch: (Map<String, dynamic> message)
       async {
@@ -121,5 +140,32 @@ class _RootPageState extends State<RootPage>{
           );
         }
     );
+  }
+
+  Future onSelectNotification(String payload) async {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return new AlertDialog(
+          title: Text("PayLoad"),
+          content: Text("Payload : $payload"),
+        );
+      },
+    );
+  }
+
+  Future _showNotificationInBackground(String id, String title, DateTime date) async {
+    print("id: $id, title: $title, date: $date");
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+        "notification_channel_id",
+        "Channel Name",
+        "Here we will put the description about the Channel",
+        importance: Importance.Max, priority: Priority.High
+    );
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    var platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.schedule(1, "title", title,
+        date, platformChannelSpecifics);
   }
 }

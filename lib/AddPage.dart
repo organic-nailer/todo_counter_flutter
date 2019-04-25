@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import "DateTimePicker.dart";
 import 'Todo.dart';
 import 'AddTagPage.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -33,12 +32,6 @@ class AddPageState extends State<AddPage>{
 
 	FirebaseUser _user;
 
-
-	//DateTime _fromDate = new DateTime.now();
-	//TimeOfDay _fromTime = const TimeOfDay(hour: 7, minute: 28);
-
-
-	var flutterLocalNotificationsPlugin;
 	@override
 	void initState() {
 		super.initState();
@@ -57,15 +50,6 @@ class AddPageState extends State<AddPage>{
 
 		if(_iseditmode) _title = "編集";
 		else _title = "追加";
-
-
-		var initializationSettingsAndroid = new AndroidInitializationSettings("app_icon");
-		var initializationSettingsIOS = new IOSInitializationSettings();
-		var initializationSettings = new InitializationSettings(
-			initializationSettingsAndroid, initializationSettingsIOS);
-		flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-		flutterLocalNotificationsPlugin.initialize(
-			initializationSettings, onSelectNotification: onSelectNotification);
 
 		SigninFirebase();
 	}
@@ -141,8 +125,6 @@ class AddPageState extends State<AddPage>{
 								"genre": "TASK",
 								"other_data": {},
 							};
-
-							_showNotificationInBackground("", item["title"], new DateTime(_date.year, _date.month, _date.day, _time.hour, _time.minute));
 
 							if(_iseditmode){
 								Firestore.instance
@@ -244,32 +226,6 @@ class AddPageState extends State<AddPage>{
 				],
 			)
 		);
-	}
-
-	Future onSelectNotification(String payload) async {
-		showDialog(
-			context: context,
-			builder: (_) {
-				return new AlertDialog(
-					title: Text("PayLoad"),
-					content: Text("Payload : $payload"),
-				);
-			},
-		);
-	}
-
-	Future _showNotificationInBackground(String id, String title, date) async {
-		var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-			"notification_channel_id",
-			"Channel Name",
-			"Here we will put the description about the Channel",
-			importance: Importance.Max, priority: Priority.High
-		);
-		var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-		var platformChannelSpecifics = new NotificationDetails(
-			androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-		await flutterLocalNotificationsPlugin.schedule(id, "title", title,
-			date, platformChannelSpecifics);
 	}
 }
 
