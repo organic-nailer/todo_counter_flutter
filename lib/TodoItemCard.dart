@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'Todo.dart';
 import 'DetailPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: non_constant_identifier_names
 Widget TodoItemCard(BuildContext context, TaskItem todo){
@@ -19,8 +20,12 @@ Widget TodoItemCard(BuildContext context, TaskItem todo){
 								title: new Text("操作"),
 								children: <Widget>[
 									SimpleDialogOption(
-										onPressed: (){
-											Firestore.instance.collection("Todos").document(todo.id).setData({"done": true}, merge: true);
+										onPressed: () async {
+											SharedPreferences prefs = await SharedPreferences.getInstance();
+											if(prefs.containsKey("userid")){
+												Firestore.instance.collection("Todos/${prefs.getString("userid")}/Tasks")
+														.document(todo.id).setData({"done": true}, merge: true);
+											}
 											Navigator.pop(context);
 										},
 										child: new Text("完了とする"),
@@ -33,8 +38,12 @@ Widget TodoItemCard(BuildContext context, TaskItem todo){
 										child: new Text("編集"),
 									),
 									SimpleDialogOption(
-										onPressed: (){
-											Firestore.instance.collection("Todos").document(todo.id).delete();
+										onPressed: () async {
+											SharedPreferences prefs = await SharedPreferences.getInstance();
+											if(prefs.containsKey("userid")){
+												Firestore.instance.collection("Users/${prefs.getString("userid")}/Tasks")
+														.document(todo.id).delete();
+											}
 											Navigator.pop(context);
 										},
 										child: new Text("削除"),
